@@ -6,102 +6,119 @@
 <title>Dimensionamiento de Memos — Sustentación</title>
 <style>
   :root {
-    --surface-1: #fcfcfb;
-    --surface-2: #f1f0ec;
-    --text-primary: #0b0b0b;
-    --text-secondary: #52514e;
-    --text-muted: #8a8984;
-    --rule: #dcdad3;
-    --series-1: #2a78d6;   /* CPU / serie principal */
-    --series-2: #eb6834;   /* E/S / serie secundaria */
-    --accent: #2a78d6;
-    --band: rgba(235, 104, 52, .12);
+    color-scheme: dark;
+    --bg: #0e1116;
+    --surface-1: #161a21;
+    --surface-2: #1e232c;
+    --rule: #2c323d;
+    --text-primary: #f0efec;
+    --text-secondary: #b4b8c0;
+    --text-muted: #7d828c;
+    --series-1: #3987e5;   /* CPU */
+    --series-2: #d95926;   /* disco (E/S) */
+    --ok: #4cc38a;
+    --warn: #e0a43a;
+    --band: rgba(217, 89, 38, .16);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; background: #1d1d1b; overflow: hidden; }
+  html, body { height: 100%; background: #07090c; overflow: hidden; }
   body { font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif; color: var(--text-primary); }
-
-  /* lienzo 16:9 de 1280×720 escalado a la ventana */
-  #deck { position: absolute; left: 50%; top: 50%; width: 1280px; height: 720px; transform-origin: center center; }
-  .slide { position: absolute; inset: 0; background: var(--surface-1); padding: 56px 72px 64px; display: none; flex-direction: column; }
-  .slide.activa { display: flex; }
-  .slide h2 { font-size: 40px; font-weight: 650; letter-spacing: -.01em; line-height: 1.12; margin-bottom: 8px; }
-  .slide .bajada { font-size: 21px; color: var(--text-secondary); margin-bottom: 28px; line-height: 1.4; max-width: 1080px; }
-  .kicker { font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin-bottom: 10px; }
-  .pie { position: absolute; left: 72px; right: 72px; bottom: 22px; display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); }
-  p, li { font-size: 21px; line-height: 1.45; }
-  ul { padding-left: 1.1em; }
-  li { margin-bottom: 10px; }
-  li::marker { color: var(--text-muted); }
-  b, strong { font-weight: 650; }
-  code { font-family: Consolas, "Courier New", monospace; font-size: .88em; background: var(--surface-2); padding: 1px 6px; border-radius: 4px; }
-  .fila { display: flex; gap: 40px; flex: 1; min-height: 0; }
-  .col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-  .col-2 { flex: 2; }
+  #deck { position: absolute; left: 50%; top: 50%; width: 1280px; height: 720px; }
+  .slide { position: absolute; inset: 0; background: var(--bg); padding: 48px 64px 52px; display: none; flex-direction: column;
+           background-image: radial-gradient(1200px 500px at 100% 0%, rgba(57,135,229,.13), transparent 60%); }
+  .slide.activa { display: flex; animation: entra .35s ease-out; }
+  @keyframes entra { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .num { position: absolute; right: 64px; bottom: 22px; font-size: 13px; color: var(--text-muted); letter-spacing: .08em; }
+  .kicker { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: var(--series-1); margin-bottom: 8px; }
+  h2 { font-size: 42px; font-weight: 750; letter-spacing: -.02em; line-height: 1.08; margin-bottom: 22px; }
+  h2 em { font-style: normal; color: var(--series-1); }
+  .exp { color: var(--text-muted); font-weight: 400; font-size: .82em; }
+  .fila { display: flex; gap: 28px; flex: 1; min-height: 0; }
+  .col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+  .card { background: var(--surface-1); border: 1px solid var(--rule); border-radius: 16px; padding: 18px 20px; }
+  .card h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text-secondary); margin-bottom: 6px; }
+  .big { font-size: 44px; font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+  .big small { font-size: 20px; font-weight: 600; color: var(--text-secondary); margin-left: 6px; letter-spacing: 0; }
+  .card p { font-size: 16px; color: var(--text-secondary); line-height: 1.4; margin-top: 6px; }
+  .card p b { color: var(--text-primary); }
 
   /* portada */
-  .portada { justify-content: center; }
-  .portada h1 { font-size: 60px; font-weight: 700; letter-spacing: -.02em; line-height: 1.05; max-width: 1000px; }
-  .portada .pregunta { font-size: 28px; color: var(--text-secondary); margin: 22px 0 48px; max-width: 900px; line-height: 1.35; }
-  .portada .autores { font-size: 20px; line-height: 1.6; }
-  .portada .autores span { color: var(--text-muted); }
-  .portada .barra { width: 96px; height: 6px; background: var(--accent); border-radius: 3px; margin-bottom: 28px; }
+  .portada { justify-content: center; padding-left: 96px;
+             background-image: radial-gradient(900px 600px at 85% 30%, rgba(57,135,229,.28), transparent 60%), radial-gradient(700px 500px at 10% 110%, rgba(217,89,38,.16), transparent 60%); }
+  .portada h1 { font-size: 76px; font-weight: 800; letter-spacing: -.035em; line-height: 1; }
+  .portada .preg { font-size: 28px; color: var(--text-secondary); margin: 18px 0 40px; max-width: 900px; line-height: 1.3; }
+  .respuesta { display: flex; gap: 16px; margin-bottom: 44px; }
+  .resp { background: var(--surface-1); border: 1px solid var(--rule); border-radius: 16px; padding: 16px 22px; min-width: 300px; }
+  .resp .k { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); }
+  .resp .v { font-size: 30px; font-weight: 800; letter-spacing: -.02em; margin-top: 4px; }
+  .resp.a .v { color: var(--series-1); } .resp.b .v { color: var(--ok); }
+  .autores { font-size: 18px; color: var(--text-secondary); line-height: 1.6; }
 
-  /* cifras */
-  .cifras { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 24px; }
-  .cifra { background: var(--surface-2); border-radius: 12px; padding: 18px 20px; }
-  .cifra .v { font-size: 44px; font-weight: 700; letter-spacing: -.02em; line-height: 1; }
-  .cifra .v small { font-size: 22px; font-weight: 600; color: var(--text-secondary); margin-left: 4px; }
-  .cifra .e { font-size: 15px; color: var(--text-secondary); margin-top: 8px; line-height: 1.35; }
+  /* pasos */
+  .paso { display: flex; gap: 16px; align-items: flex-start; }
+  .paso .n { flex: 0 0 38px; height: 38px; border-radius: 50%; background: var(--series-1); color: #fff; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  .paso h4 { font-size: 22px; font-weight: 700; margin-bottom: 2px; }
+  .paso p { font-size: 17.5px; color: var(--text-secondary); line-height: 1.4; }
+  .codo-tag { color: var(--ok); font-weight: 800; }
 
-  /* tablas */
-  table { border-collapse: collapse; width: 100%; font-size: 17px; }
-  th { text-align: left; font-weight: 650; color: var(--text-secondary); font-size: 14px; text-transform: uppercase; letter-spacing: .04em; padding: 8px 10px; border-bottom: 2px solid var(--text-primary); }
-  td { padding: 9px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.35; }
-  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
-  tr.gana td { background: #eaf2fc; }
-  .chip { display: inline-block; font-size: 13px; font-weight: 650; padding: 2px 8px; border-radius: 10px; background: var(--surface-2); color: var(--text-secondary); }
-  .chip.si { background: #e3f1e3; color: #1d5f1d; }
-  .chip.casi { background: #fdf0dc; color: #7a4c00; }
+  /* tiras */
+  .tira { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .por { background: var(--surface-2); border-radius: 12px; padding: 8px 14px; }
+  .por b { display: block; font-size: 16px; margin-bottom: 1px; }
+  .por span { font-size: 14px; color: var(--text-secondary); line-height: 1.35; display: block; }
 
-  /* tarjetas */
-  .tarjetas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-  .tarjeta { border: 1px solid var(--rule); border-radius: 12px; padding: 18px 20px; }
-  .tarjeta h3 { font-size: 19px; font-weight: 650; margin-bottom: 6px; }
-  .tarjeta p { font-size: 18px; color: var(--text-secondary); line-height: 1.4; }
-  .tarjeta .num { font-size: 26px; font-weight: 700; color: var(--text-primary); display: block; margin: 4px 0 6px; }
+  /* opciones */
+  .opciones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .demanda { margin-top: 22px; display: flex; gap: 14px; align-items: center; background: var(--surface-1); border: 1px solid var(--rule); border-radius: 14px; padding: 14px 20px; font-size: 18px; color: var(--text-secondary); }
+  .demanda b { color: var(--text-primary); font-size: 22px; font-weight: 800; margin-right: 4px; }
+  .demanda .k { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); margin-right: 8px; }
+  .demanda .sep { color: var(--rule); }
+  .op { background: var(--surface-1); border: 1px solid var(--rule); border-radius: 18px; padding: 22px 22px 18px; display: flex; flex-direction: column; position: relative; }
+  .op.gana { border: 2px solid var(--series-1); box-shadow: 0 0 0 6px rgba(57,135,229,.12); }
+  .op .tipo { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); }
+  .op h3 { font-size: 26px; font-weight: 800; margin: 4px 0 12px; letter-spacing: -.01em; }
+  .chip { display: inline-block; font-size: 14px; font-weight: 750; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; align-self: flex-start; }
+  .chip.si { background: rgba(76,195,138,.16); color: var(--ok); }
+  .chip.casi { background: rgba(224,164,58,.16); color: var(--warn); }
+  .op .costo { font-size: 46px; font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+  .op .costo small { font-size: 18px; color: var(--text-secondary); font-weight: 600; }
+  .op ul { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 9px; }
+  .op li { font-size: 17.5px; line-height: 1.35; color: var(--text-secondary); padding-left: 24px; position: relative; }
+  .op li::before { position: absolute; left: 0; top: 0; font-weight: 800; }
+  .op li.mas::before { content: "+"; color: var(--ok); }
+  .op li.menos::before { content: "−"; color: var(--warn); }
+  .op li b { color: var(--text-primary); }
+  .sello { position: absolute; top: -13px; right: 18px; background: var(--series-1); color: #fff; font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; padding: 5px 12px; border-radius: 12px; }
 
-  .flujo { display: flex; gap: 14px; align-items: stretch; margin-top: 6px; }
-  .paso { flex: 1; background: var(--surface-2); border-radius: 12px; padding: 16px 18px; position: relative; }
-  .paso .i { font-size: 14px; font-weight: 700; color: var(--accent); }
-  .paso h3 { font-size: 19px; margin: 4px 0 6px; }
-  .paso p { font-size: 16px; color: var(--text-secondary); line-height: 1.4; }
-
-  .cita { border-left: 4px solid var(--accent); padding: 6px 0 6px 18px; font-size: 22px; line-height: 1.45; margin-top: auto; }
-  .nota-fuente { font-size: 13px; color: var(--text-muted); margin-top: 8px; }
+  /* recomendación */
+  .reco { background: linear-gradient(135deg, rgba(57,135,229,.22), rgba(57,135,229,.06)); border: 2px solid var(--series-1); border-radius: 18px; padding: 24px 26px; }
+  .reco .t { font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--series-1); }
+  .reco .v { font-size: 38px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; margin: 8px 0 6px; }
+  .reco p { font-size: 17px; color: var(--text-secondary); line-height: 1.45; }
+  .reco p b { color: var(--text-primary); }
+  .descarte { font-size: 15px; color: var(--text-secondary); line-height: 1.5; }
+  .descarte b { color: var(--text-primary); }
 
   /* gráficas */
+  .graf-tit { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+  .graf-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
   .graf { position: relative; flex: 1; min-height: 0; }
   .graf svg { width: 100%; height: 100%; display: block; overflow: visible; }
-  .graf-tit { font-size: 16px; font-weight: 650; margin-bottom: 2px; }
-  .graf-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 6px; }
-  .leyenda { display: flex; gap: 18px; font-size: 14px; color: var(--text-secondary); margin-bottom: 4px; }
-  .leyenda i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
-  .tt { position: absolute; pointer-events: none; background: #0b0b0b; color: #fff; font-size: 13px; line-height: 1.4; padding: 6px 9px; border-radius: 6px; white-space: nowrap; opacity: 0; transition: opacity .08s; z-index: 5; }
-  .tt b { font-weight: 650; }
   .eje text { font-size: 12px; fill: var(--text-muted); }
-  .eje line, .grid line { stroke: var(--rule); }
+  .grid line { stroke: var(--rule); }
+  .leyenda { display: flex; gap: 18px; font-size: 13px; color: var(--text-secondary); margin-top: 6px; }
+  .leyenda i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  .tt { position: absolute; pointer-events: none; background: #f0efec; color: #0b0b0b; font-size: 13px; line-height: 1.4; padding: 6px 9px; border-radius: 6px; white-space: nowrap; opacity: 0; z-index: 5; }
 
-  /* notas del expositor */
-  #notas { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(11,11,11,.94); color: #f0efec; font-size: 17px; line-height: 1.5; padding: 14px 24px 18px; display: none; z-index: 10; max-height: 40vh; overflow: auto; }
+  #notas { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(240,239,236,.97); color: #0b0b0b; font-size: 18px; line-height: 1.5; padding: 14px 24px 18px; display: none; z-index: 10; max-height: 42vh; overflow: auto; }
   #notas.ver { display: block; }
-  #notas .t { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #a9a8a2; margin-bottom: 4px; }
-  #progreso { position: fixed; left: 0; top: 0; height: 4px; background: var(--accent); transition: width .2s; z-index: 11; }
-  #ayuda { position: fixed; right: 14px; top: 10px; font-size: 12px; color: #8a8984; z-index: 9; transition: opacity 1s; }
+  #notas .t { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #52514e; margin-bottom: 4px; }
+  #progreso { position: fixed; left: 0; top: 0; height: 4px; background: var(--series-1); transition: width .25s; z-index: 11; }
+  #ayuda { position: fixed; right: 14px; top: 10px; font-size: 12px; color: #7d828c; z-index: 9; transition: opacity 1s; }
   @media print {
-    html, body { overflow: visible; background: #fff; }
+    html, body { overflow: visible; background: var(--bg); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     #deck { position: static; transform: none !important; width: auto; height: auto; }
-    .slide { display: flex !important; position: relative; width: 1280px; height: 720px; page-break-after: always; }
+    .slide { display: flex !important; position: relative; width: 1280px; height: 720px; page-break-after: always; animation: none; }
     #notas, #progreso, #ayuda { display: none !important; }
   }
 </style>
@@ -110,348 +127,219 @@
 <div id="progreso"></div>
 <div id="deck">
 
-<!-- 1 · portada -->
-<section class="slide portada activa" data-notas="Saludo. Presentar a los dos integrantes. Decir la pregunta tal cual: en qué máquina debería correr esta aplicación y con qué datos lo sostenemos. Anticipar la respuesta: una AWS t3.small, y la app espera por CPU.">
-  <div class="barra"></div>
-  <h1>Dimensionamiento de Memos</h1>
-  <p class="pregunta">¿En qué máquina debería correr esta aplicación, y con qué datos lo sostenemos?</p>
-  <p class="autores">Andrés Camilo Maya Rosero · Camilo Andrés Castro Acosta<br><span>Arquitectura del Computador · noviembre de 2026</span></p>
-</section>
-
-<!-- 2 · la app -->
-<section class="slide" data-notas="Memos es una app real, de código abierto, con 50 000+ estrellas. La elegimos porque cada operación carga un componente distinto: login = CPU pura por bcrypt; crear = disco por el fsync del commit; listar y buscar = CPU serializando y recorriendo datos. No se sabía de antemano dónde iba a esperar.">
-  <div class="kicker">La aplicación</div>
-  <h2>Memos 0.31: notas autoalojadas en Go + SQLite</h2>
-  <p class="bajada">Un solo contenedor Docker, sin servicios externos. La elegimos porque cada operación carga un componente distinto del computador.</p>
-  <div class="tarjetas">
-    <div class="tarjeta"><h3>Iniciar sesión</h3><span class="num">bcrypt</span><p>2<sup>10</sup> rondas de cálculo puro en un núcleo. No toca disco ni red.</p></div>
-    <div class="tarjeta"><h3>Crear / editar nota</h3><span class="num">fsync</span><p>Commit en SQLite (modo WAL): una escritura pequeña y síncrona al disco. Un solo escritor a la vez.</p></div>
-    <div class="tarjeta"><h3>Listar / buscar</h3><span class="num">CPU + caché</span><p>Recorre la base y serializa respuestas JSON de decenas de KB. La búsqueda de texto no usa índice.</p></div>
+<!-- 1 · Portada: la pregunta y la respuesta -->
+<section class="slide portada activa" data-notas="Somos Andrés y Camilo. La pregunta: ¿en qué máquina debería correr Memos, una aplicación de notas real (Go + SQLite), y con qué datos lo demostramos? La respuesta en una línea: medimos que se frena por el procesador, no por el disco ni por la red, y por eso recomendamos una máquina pequeña en la nube, la AWS t3.small.">
+  <h1>Dimensionamiento<br>de Memos</h1>
+  <p class="preg">¿En qué máquina debería correr esta aplicación de notas, y con qué datos lo sostenemos?</p>
+  <div class="respuesta">
+    <div class="resp a"><div class="k">Dónde espera</div><div class="v">En la CPU</div></div>
+    <div class="resp b"><div class="k">Recomendación</div><div class="v">AWS t3.small · 20,5 USD/mes</div></div>
   </div>
-  <p class="cita" style="margin-top:36px">No era obvio de antemano si iba a esperar por CPU, por disco o por red: eso es lo que había que medir.</p>
-  <div class="pie"><span>Dimensionamiento de Memos</span><span>2</span></div>
+  <p class="autores">Andrés Camilo Maya Rosero · Camilo Andrés Castro Acosta<br>Arquitectura del Computador · noviembre de 2026</p>
 </section>
 
-<!-- 3 · la carga -->
-<section class="slide" data-notas="k6 con tasa de llegada constante: manda N peticiones por segundo aunque el servidor se ponga lento, así la latencia incluye la cola real (con usuarios fijos se esconde: coordinated omission). Mezcla 60/25/15. Primero escalonada para encontrar el codo; luego tres sostenidas de 10 minutos al 70 % del codo. Antes de cada corrida se borra la base y se siembran las mismas 2000 notas con semilla fija: reproducible.">
-  <div class="kicker">Cómo generamos la carga</div>
-  <h2>k6 a tasa constante, carga sostenida y repetida</h2>
-  <p class="bajada">k6 envía la tasa fijada aunque el servidor se frene: la latencia medida incluye la cola real.</p>
+<!-- 2 · Cómo medimos -->
+<section class="slide" data-notas="Con k6 (un programa que simula muchos usuarios) le enviamos peticiones a ritmo fijo: 60 % lecturas, 25 % escrituras y 15 % inicios de sesión. Primero subimos la carga por escalones para hallar el codo: la carga máxima antes de que se forme fila. Salió en 15 peticiones por segundo; a 20 la respuesta salta de 200 ms a 4 segundos (la gráfica). Después la dejamos fija en 10 por segundo, el 70 % del codo, durante 10 minutos, y lo repetimos 3 veces. Cada segundo medimos CPU, memoria, disco, red y el PSI: el porcentaje del tiempo que la aplicación estuvo esperando.">
+  <div class="kicker">Cómo medimos</div>
+  <h2>Carga real, sostenida y repetida</h2>
   <div class="fila">
-    <div class="col">
-      <table>
-        <thead><tr><th>Grupo</th><th>Operaciones</th><th class="n">%</th></tr></thead>
-        <tbody>
-          <tr><td>Lecturas</td><td>listar, obtener, buscar texto, filtrar etiqueta, estadísticas, leer adjunto</td><td class="n">60</td></tr>
-          <tr><td>Escrituras</td><td>crear, editar, subir adjunto (128 KiB)</td><td class="n">25</td></tr>
-          <tr><td>Sesión</td><td>login (repartido entre 50 usuarios)</td><td class="n">15</td></tr>
-        </tbody>
-      </table>
-      <p class="nota-fuente">Memos 0.31.0 fijado por digest · base reiniciada y sembrada con 2000 notas (semilla fija) antes de cada corrida · limitador antiabuso apagado para medir el servidor, no la cuota.</p>
+    <div class="col" style="flex:1.05; gap:20px">
+      <div class="paso"><div class="n">1</div><div><h4>Carga con k6 <span class="exp">(simulador de usuarios)</span></h4><p>Peticiones a ritmo fijo: <b>60 %</b> leer notas · <b>25 %</b> escribir · <b>15 %</b> iniciar sesión.</p></div></div>
+      <div class="paso"><div class="n">2</div><div><h4>Escalonada: hallar el codo</h4><p>De 5 a 40 req/s <span class="exp">(peticiones por segundo)</span>. El codo, la carga máxima antes de hacer fila: <span class="codo-tag">15 req/s</span>.</p></div></div>
+      <div class="paso"><div class="n">3</div><div><h4>Sostenida: 10 req/s × 10 min × 3</h4><p>Al 70 % del codo, para medir la máquina trabajando normal y comprobar que el resultado se repite.</p></div></div>
+      <div class="paso"><div class="n">4</div><div><h4>Cada segundo, desde el sistema operativo</h4><p>CPU, memoria, disco, red, latencia <span class="exp">(tiempo de respuesta)</span> y <b>PSI</b> <span class="exp">(% del tiempo esperando CPU o disco)</span>.</p></div></div>
     </div>
-    <div class="col">
-      <div class="flujo" style="flex-direction:column">
-        <div class="paso"><div class="i">1 · Escalonada</div><h3>5 → 40 req/s, 1 min por escalón</h3><p>Encuentra el codo: el último escalón con ≥ 95 % atendido, &lt; 1 % de errores y p95 &lt; 1 s.</p></div>
-        <div class="paso"><div class="i">2 · Sostenida × 3</div><h3>2 min subida · 10 min meseta · 1 min bajada</h3><p>Al 70 % del codo. Solo se analiza la meseta. Tres repeticiones para ver si el número es repetible.</p></div>
-        <div class="paso"><div class="i">3 · Dos instancias</div><h3>Sin límites y con 1 CPU / 256 MiB</h3><p>La misma batería para el equipo físico y para el contenedor limitado.</p></div>
-      </div>
-    </div>
-  </div>
-  <div class="pie"><span>Dimensionamiento de Memos</span><span>3</span></div>
-</section>
-
-<!-- 4 · qué medimos -->
-<section class="slide" data-notas="Un contenedor auxiliar lee cada segundo los contadores del kernel del cgroup de Memos; como es otro contenedor, su consumo no se suma. La pieza clave es PSI: el porcentaje del tiempo en que alguna tarea de Memos estaba lista para trabajar pero esperando la CPU o el disco. Eso responde directamente dónde espera. k6 guarda cada petición para calcular p50, p95 y p99, no el promedio.">
-  <div class="kicker">Qué medimos y de dónde sale</div>
-  <h2>Contadores del kernel, una vez por segundo</h2>
-  <p class="bajada">Un contenedor auxiliar lee el cgroup de Memos sin sumar su propio consumo; k6 guarda cada petición.</p>
-  <table>
-    <thead><tr><th>Qué</th><th>De dónde sale</th><th>Cómo se reporta</th></tr></thead>
-    <tbody>
-      <tr><td>CPU</td><td><code>cpu.stat</code> del cgroup</td><td>núcleos usados (1,0 = un núcleo lleno), promedio y pico; por núcleo desde la VM</td></tr>
-      <tr><td>Memoria residente</td><td><code>VmRSS</code> del proceso</td><td>MiB reales, junto a <code>VmSize</code> (lo que “pide”)</td></tr>
-      <tr><td>Disco</td><td><code>io.stat</code> del cgroup</td><td>IOPS y MB/s, lectura y escritura por separado</td></tr>
-      <tr><td>Red</td><td><code>/proc/net/dev</code> del contenedor</td><td>KB/s de entrada y salida</td></tr>
-      <tr><td>Latencia</td><td>cada petición de k6</td><td>p50, p95 y p99 — total y por operación</td></tr>
-      <tr class="gana"><td><b>¿Dónde espera?</b></td><td><code>cpu.pressure</code>, <code>io.pressure</code> (PSI)</td><td><b>% del tiempo con tareas listas pero esperando CPU o disco</b></td></tr>
-    </tbody>
-  </table>
-  <p class="cita" style="margin-top:28px">Si el PSI de CPU es alto y el de E/S bajo, la aplicación espera por CPU. Ese es el número que lo demuestra.</p>
-  <div class="pie"><span>Dimensionamiento de Memos</span><span>4</span></div>
-</section>
-
-<!-- 5 · el codo -->
-<section class="slide" data-notas="Hasta 15 req/s todo bien: p95 de 227 ms. A 20 req/s todavía atiende las 20, pero la p95 salta a 4,3 s: se forma cola. Lo máximo que llegó a atender fueron 27 req/s; a 40 pedidas atiende 24 con 20 % de errores. Codo = 15 req/s, y la sostenida va al 70 %: 10 req/s. Por qué 70 %: W = S / (1 − ρ); a 70 % de ocupación la respuesta ya es 3,3 veces el tiempo de servicio, a 90 % son 10 veces.">
-  <div class="kicker">Resultado 1 · prueba escalonada</div>
-  <h2>El codo está en 15 req/s</h2>
-  <p class="bajada">Pasado ese punto la máquina deja de seguir el ritmo: la latencia se dispara y lo que no cabe se vuelve cola.</p>
-  <div class="fila">
-    <div class="col">
-      <div class="graf-tit">Tasa atendida vs. pedida</div>
-      <div class="leyenda"><span><i style="background:var(--series-1)"></i>atendida</span><span><i style="background:var(--text-muted)"></i>ideal (atendida = pedida)</span></div>
-      <div class="graf" id="g-codo"></div>
-    </div>
-    <div class="col">
-      <div class="graf-tit">Latencia p95 por escalón</div>
-      <div class="graf-sub">escala logarítmica · ms</div>
+    <div class="col card" style="flex:1">
+      <div class="graf-tit">Tiempo de respuesta (p95) según la carga</div>
+      <div class="graf-sub">p95 = lo que tarda el 95 % de las peticiones · escala logarítmica</div>
       <div class="graf" id="g-p95"></div>
     </div>
   </div>
-  <p class="nota-fuente">Fuente: results/20261103-131026_bench-escalonada · sostenida = 70 % del codo = <b>10 req/s</b> (W = S / (1 − ρ): a ρ = 0,7 la respuesta ya es 3,3 × el tiempo de servicio).</p>
-  <div class="pie"><span>Dimensionamiento de Memos</span><span>5</span></div>
+  <div class="num">2 / 5</div>
 </section>
 
-<!-- 6 · dónde espera -->
-<section class="slide" data-notas="La respuesta central: espera por CPU. En la escalonada, el PSI de CPU sube de 3 % a 28 % mientras el de E/S se queda en 1–2 %: más carga = más espera por CPU, nunca por disco. En la sostenida a 10 req/s: PSI CPU 6,4 % contra 2,6 % de E/S. El disco hace 14 IOPS que mueven 0,17 MB/s: casi nada. La red, 131 KB/s. La memoria, 64 MiB aunque Go pide 1,3 GiB de memoria virtual.">
-  <div class="kicker">Resultado 2 · la pregunta central</div>
-  <h2>Memos espera por CPU, no por disco ni por red</h2>
-  <p class="bajada">Al subir la carga, la espera por CPU crece de 3 % a 28 % del tiempo; la espera por disco se queda en 1–2 %.</p>
+<!-- 3 · Dónde espera y por qué -->
+<section class="slide" data-notas="La respuesta central: Memos espera por la CPU. Al subir la carga, la espera por CPU crece de 3 % a 28 % del tiempo y la espera por disco se queda en 1 o 2 %. En la prueba sostenida usa medio núcleo de 2; el disco hace 14 operaciones por segundo y mueve 0,17 MB/s, casi nada (una foto de celular pesa 3 MB); la memoria real es 64 MiB. Por qué, con arquitectura: el login revisa la contraseña con bcrypt, que es cálculo puro (97 ms contra 6 ms de abrir una nota); el disco no lee porque la base cabe en la caché de RAM; y SQLite solo deja escribir a uno a la vez, la parte secuencial de Amdahl que ningún núcleo extra acelera.">
+  <div class="kicker">La respuesta central</div>
+  <h2>Memos espera por la <em>CPU</em>, no por el disco ni la red</h2>
   <div class="fila">
-    <div class="col col-2">
-      <div class="graf-tit">PSI: % del tiempo esperando, por escalón</div>
-      <div class="leyenda"><span><i style="background:var(--series-1)"></i>espera por CPU</span><span><i style="background:var(--series-2)"></i>espera por disco (E/S)</span></div>
+    <div class="col card" style="flex:1.15">
+      <div class="graf-tit">PSI: % del tiempo esperando, por nivel de carga</div>
+      <div class="leyenda"><span><i style="background:var(--series-1)"></i>esperando CPU</span><span><i style="background:var(--series-2)"></i>esperando disco</span></div>
       <div class="graf" id="g-psi"></div>
     </div>
-    <div class="col">
-      <div class="graf-tit" style="margin-bottom:10px">Sostenida a 10 req/s (3 × 10 min)</div>
-      <table>
-        <tbody>
-          <tr class="gana"><td>PSI CPU / PSI E/S</td><td class="n"><b>6,4 % / 2,6 %</b></td></tr>
-          <tr><td>CPU de Memos</td><td class="n">0,50 de 2 núcleos</td></tr>
-          <tr><td>Disco</td><td class="n">14 IOPS · 0,17 MB/s</td></tr>
-          <tr><td>Lecturas de disco</td><td class="n">0 IOPS</td></tr>
-          <tr><td>Red salida</td><td class="n">131 KB/s</td></tr>
-          <tr><td>RSS / VmSize</td><td class="n">64 MiB / 1,3 GiB</td></tr>
-          <tr><td>p50 · p95 · p99</td><td class="n">39 · 250 · 558 ms</td></tr>
-          <tr><td>Errores</td><td class="n">0 %</td></tr>
-        </tbody>
-      </table>
-      <p class="nota-fuente">Latencia: mediana de las 3 repeticiones. CV de CPU, IOPS y red: 1–10 %.</p>
-    </div>
-  </div>
-  <div class="pie"><span>Dimensionamiento de Memos</span><span>6</span></div>
-</section>
-
-<!-- 7 · arquitectura -->
-<section class="slide" data-notas="Esta es la que más pesa: qué componente causa cada número. 1) bcrypt: el login tarda 97 ms contra 28 de crear y 6 de obtener; lo único distinto es bcrypt, cálculo puro. 2) Caché de páginas: 0 IOPS de lectura porque la base (1 MB + 5 MB de WAL) vive en los 68 MiB de caché de páginas del kernel. 3) fsync: cada commit es una escritura pequeña y síncrona, por eso 14 IOPS y solo 0,17 MB/s: se necesita latencia por operación, no caudal. 4) SQLite: un solo escritor; es la parte secuencial de Amdahl. Con t ≈ 32 ms el techo es 31 escrituras/s sin importar los núcleos. 5) Little: L = λ·W; la memoria solo crece cuando se forma cola.">
-  <div class="kicker">Explicación con arquitectura</div>
-  <h2>Qué componente causa cada número</h2>
-  <div class="tarjetas" style="grid-template-columns: repeat(3, 1fr); margin-top: 18px">
-    <div class="tarjeta"><h3>CPU · bcrypt</h3><span class="num">97 ms vs. 6 ms</span><p>p50 del login frente a obtener una nota. La diferencia es cálculo puro (2<sup>10</sup> rondas), en un solo núcleo.</p></div>
-    <div class="tarjeta"><h3>Caché de páginas</h3><span class="num">0 IOPS de lectura</span><p>La base (1 MB + 5 MB de WAL) cabe en los 68 MiB que el kernel guarda en RAM: SQLite lee de memoria, no del disco.</p></div>
-    <div class="tarjeta"><h3>Disco · fsync</h3><span class="num">14 IOPS · 0,17 MB/s</span><p>Cada commit es una escritura pequeña y síncrona. Importa la latencia por operación, no el caudal.</p></div>
-    <div class="tarjeta"><h3>Parte secuencial · Amdahl</h3><span class="num">≤ 31 escrituras/s</span><p>SQLite admite un solo escritor. Con t ≈ 32 ms por commit, el techo es 1/t, tenga la máquina los núcleos que tenga.</p></div>
-    <div class="tarjeta"><h3>Memoria · ley de Little</h3><span class="num">64 MiB vs. 1,3 GiB</span><p>La RSS real frente a la virtual que reserva Go. Solo crece con la cola: L = λ·W peticiones en vuelo.</p></div>
-    <div class="tarjeta"><h3>Frecuencia del Athlon</h3><span class="num">3,2 → 2,3 GHz</span><p>Con los 2 núcleos ocupados baja de frecuencia: parte del aumento de latencia es reloj, no cola.</p></div>
-  </div>
-  <p class="cita" style="margin-top:auto">Más núcleos aceleran bcrypt y la serialización, pero no la parte secuencial: el único escritor de SQLite pone el techo.</p>
-  <div class="pie"><span>Dimensionamiento de Memos</span><span>7</span></div>
-</section>
-
-<!-- 8 · el giro -->
-<section class="slide" data-notas="En la entrega parcial, top mostró 37 % de wa y parecía disco. Pero Windows estaba al 100 % de CPU y con 460 MB libres: paginando. El PSI de E/S propio de Memos era 2,6 %. Con el equipo despejado el wa bajó a 5 %. Y la repetición 2 lo mostró en vivo: en los últimos 110 s, Windows cayó a 235 MB libres y llegó al 100 %. El PSI de CPU de Memos subió a 40 % mientras el de E/S quedó bajo 6 %: Memos esperaba CPU que le quitaba Windows. Como k6 siguió mandando 10 req/s, la cola creció y la RSS pasó de 60 a 170 MiB: ley de Little en vivo. Por eso reportamos la mediana, sin ocultar el promedio.">
-  <div class="kicker">El antecedente que se contradecía</div>
-  <h2>Hay que medir el proceso, no la máquina entera</h2>
-  <p class="bajada">La entrega parcial culpaba al disco (<code>wa</code> 37 %). Era Windows paginando. La repetición 2 lo repitió en vivo:</p>
-  <div class="fila">
-    <div class="col">
-      <div class="graf-tit">PSI de CPU de Memos (%)</div>
-      <div class="graf-sub">repetición 2, segundos desde el inicio · franja = Windows al 100 % y 235 MB libres</div>
-      <div class="graf" id="g-ep-psi"></div>
-    </div>
-    <div class="col">
-      <div class="graf-tit">Memoria residente de Memos (MiB)</div>
-      <div class="graf-sub">la cola crece y la RSS con ella (ley de Little)</div>
-      <div class="graf" id="g-ep-rss"></div>
-    </div>
-  </div>
-  <p class="nota-fuente">Durante la racha, el PSI de E/S de Memos se quedó por debajo de 6 %. Por eso la latencia del resumen es la mediana de las 3 repeticiones; el promedio (p95 3,6 s, CV 162 %) está en el informe.</p>
-  <div class="pie"><span>Dimensionamiento de Memos</span><span>8</span></div>
-</section>
-
-<!-- 9 · comparación -->
-<section class="slide" data-notas="Las tres opciones contra la misma demanda medida: 0,50 núcleos, 64 MiB, 14 IOPS, 131 KB/s a 10 req/s. Portátil: aguanta, pero no tiene disponibilidad ni IP pública. t3.small: le sobran memoria, IOPS y red; lo justo es la CPU, porque su línea base es 0,4 vCPU y Memos usa 0,50. Contenedor de 1 CPU y 256 MiB: aguanta los 10 req/s con 4,3 % de throttling, pero en la escalonada la RSS llegó a 238 de 256 MiB: al borde del OOM. La nube no se midió: se evaluó con su ficha y un factor f entre 0,7 y 1,5; la conclusión es la misma en todo el rango.">
-  <div class="kicker">Comparación justa</div>
-  <h2>Tres opciones contra la misma demanda medida</h2>
-  <p class="bajada">Demanda a 10 req/s: 0,50 núcleos (ráfagas p95 de 1,02) · 64 MiB · 14 IOPS · 131 KB/s.</p>
-  <table>
-    <thead><tr><th></th><th>A · Portátil (Athlon 3050U)</th><th>B · AWS EC2 t3.small</th><th>C · Contenedor 1 CPU / 256 MiB</th></tr></thead>
-    <tbody>
-      <tr><td><b>¿Aguanta?</b></td>
-        <td><span class="chip si">Sí</span> p95 250 ms, 0 % errores</td>
-        <td><span class="chip si">Sí</span> ráfagas 0,7–1,5 vCPU de 2</td>
-        <td><span class="chip casi">Sí, justo</span> p95 279 ms · throttling 4,3 %</td></tr>
-      <tr><td><b>Le sobra</b></td><td>memoria y disco</td><td>memoria (2 GiB), 3 000 IOPS, red</td><td>disco y red</td></tr>
-      <tr><td><b>Le falta</b></td><td>disponibilidad, IP pública; comparte CPU con el usuario</td><td>CPU sostenida: 0,35–0,75 vCPU frente a 0,4 de línea base</td><td>memoria si hay cola: RSS 238 de 256 MiB en la escalonada</td></tr>
-      <tr class="gana"><td><b>Costo/mes</b></td><td><b>≈ 12,3 USD</b><br><span class="nota-fuente">luz 16 900 COP + 800 000 COP / 36</span></td><td><b>20,5 USD</b><br><span class="nota-fuente">+ 0 a 12,6 USD de créditos</span></td><td><b>lo de A</b><br><span class="nota-fuente">como servicio (Fargate): 36,0 USD</span></td></tr>
-    </tbody>
-  </table>
-  <p class="nota-fuente" style="margin-top:14px">La t3.small se evaluó con su ficha, no se midió: un núcleo del Athlon no es un vCPU de Xeon, así que la CPU se trasladó con un factor f = 0,7 a 1,5. La recomendación es la misma en todo el rango. Precios us-east-1, 730 h/mes; tarifa Cedenar estrato 4 ≈ 926 COP/kWh.</p>
-  <div class="pie"><span>Dimensionamiento de Memos</span><span>9</span></div>
-</section>
-
-<!-- 10 · por qué no comparables -->
-<section class="slide" data-notas="Por qué los núcleos no se comparan uno a uno. Un vCPU de t3 es un hilo: los 2 vCPU de la t3.small son los dos hyperthreads de un mismo núcleo físico. La línea base es 20 % por vCPU = 0,4 vCPU sostenidos; arriba de eso se pagan créditos a 0,05 USD por vCPU-hora. Y el límite de un contenedor no reserva núcleos: reparte tiempo. cpus 1.0 son 100 ms de CPU cada 100 ms; si se gastan antes, el kernel congela el proceso el resto del periodo. Eso es el throttling de 4,3 %.">
-  <div class="kicker">Por qué los núcleos no son comparables</div>
-  <h2>Un núcleo, un vCPU y un límite de contenedor son cosas distintas</h2>
-  <div class="tarjetas" style="margin-top:18px">
-    <div class="tarjeta"><h3>Athlon Silver 3050U</h3><span class="num">2 núcleos reales</span><p>Sin SMT: cada “CPU” es un núcleo físico. 2,3 GHz con ambos activos, 3,2 GHz con uno. L3 de 4 MB.</p></div>
-    <div class="tarjeta"><h3>t3.small</h3><span class="num">2 vCPU = 1 núcleo</span><p>Dos hyperthreads del mismo núcleo Xeon. Línea base de 0,4 vCPU; por encima se pagan créditos (0,05 USD por vCPU-hora).</p></div>
-    <div class="tarjeta"><h3>Contenedor <code>cpus: 1.0</code></h3><span class="num">100 ms cada 100 ms</span><p>Cuota de tiempo (CFS), no núcleos reservados. Si la gasta antes, el kernel lo congela: <b>4,3 %</b> del tiempo en la sostenida.</p></div>
-  </div>
-  <table style="margin-top:28px">
-    <thead><tr><th>CPU trasladada a la t3.small</th><th class="n">f = 0,7</th><th class="n">f = 1,0</th><th class="n">f = 1,5</th></tr></thead>
-    <tbody>
-      <tr><td>vCPU promedio necesarios</td><td class="n">0,35</td><td class="n">0,50</td><td class="n">0,75</td></tr>
-      <tr><td>vCPU en ráfagas (p95 por segundo)</td><td class="n">0,71</td><td class="n">1,02</td><td class="n">1,53</td></tr>
-      <tr><td>Recargo por créditos (USD/mes, si durara las 24 h)</td><td class="n">0,00</td><td class="n">3,56</td><td class="n">12,64</td></tr>
-      <tr class="gana"><td><b>Recomendación</b></td><td class="n">t3.small</td><td class="n">t3.small</td><td class="n">t3.small</td></tr>
-    </tbody>
-  </table>
-  <div class="pie"><span>Dimensionamiento de Memos</span><span>10</span></div>
-</section>
-
-<!-- 11 · ×10 -->
-<section class="slide" data-notas="Con 10 veces la carga, 100 req/s, unas siete veces el codo. Primero se llena la CPU: el máximo que atendió fueron 27 req/s; el resto es cola. Lo primero en sufrir es el login, porque bcrypt es cálculo puro: su p50 pasa de 147 ms a 1,6 s ya a 20 req/s. Después fallan los logins y las escrituras: en la escalonada a 40 req/s, login 99 %, editar 54 %, crear 37 %, subir adjunto 29 %; las lecturas, 0 %. Las escrituras fallan porque con la CPU saturada cada commit retiene más tiempo el bloqueo del único escritor de SQLite. Luego la memoria por la cola, que en el contenedor de 256 MiB termina en OOM. La red no: 1,3 MB/s.">
-  <div class="kicker">Si la carga se multiplicara por diez</div>
-  <h2>Primero se llena la CPU; lo que falla son logins y escrituras</h2>
-  <p class="bajada">Errores por operación en la escalonada a 40 req/s pedidas. Las lecturas no fallan.</p>
-  <div class="fila">
-    <div class="col col-2">
-      <div class="graf" id="g-err"></div>
-    </div>
-    <div class="col">
-      <div class="flujo" style="flex-direction:column">
-        <div class="paso"><div class="i">1 · CPU</div><p>Máximo atendido: 27 req/s. El p50 del login pasa de 147 ms a 1,6 s ya a 20 req/s.</p></div>
-        <div class="paso"><div class="i">2 · SQLite</div><p>Con la CPU llena, cada commit retiene más tiempo el único bloqueo de escritura: <code>SQLITE_BUSY</code> → HTTP 500.</p></div>
-        <div class="paso"><div class="i">3 · Memoria</div><p>Más cola → más RSS (245 MiB a 40 req/s). En el contenedor de 256 MiB: OOM.</p></div>
-        <div class="paso"><div class="i">4 · Red</div><p>No: ×10 son ≈ 1,3 MB/s.</p></div>
+    <div class="col" style="flex:1">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px">
+        <div class="card" style="padding:14px 18px"><h3>CPU usada</h3><div class="big" style="font-size:38px">0,50<small>/ 2 núcleos</small></div></div>
+        <div class="card" style="padding:14px 18px"><h3>PSI CPU vs. disco</h3><div class="big" style="font-size:38px">6,4<small>% vs 2,6 %</small></div></div>
+        <div class="card" style="padding:14px 18px"><h3>Disco</h3><div class="big" style="font-size:38px">0,17<small>MB/s</small></div><p>14 IOPS <span class="exp">(operaciones/s)</span></p></div>
+        <div class="card" style="padding:14px 18px"><h3>Memoria real</h3><div class="big" style="font-size:38px">64<small>MiB</small></div><p>Red: 131 KB/s</p></div>
+      </div>
+      <div class="tira" style="grid-template-columns:1fr; gap:8px">
+        <div class="por"><b>bcrypt → CPU</b><span>Login 97 ms vs. 6 ms de abrir una nota: es cálculo puro.</span></div>
+        <div class="por"><b>Caché de páginas → 0 lecturas de disco</b><span>La base cabe en la RAM; SQLite lee de memoria.</span></div>
+        <div class="por"><b>SQLite, un solo escritor → Amdahl</b><span>Las escrituras hacen fila: ≤ 31 por segundo, con los núcleos que sea.</span></div>
       </div>
     </div>
   </div>
-  <div class="pie"><span>Dimensionamiento de Memos</span><span>11</span></div>
+  <div class="num">3 / 5</div>
 </section>
 
-<!-- 12 · descartadas -->
-<section class="slide" data-notas="Qué descartamos y por qué. Fargate con EFS: no tiene disco propio y SQLite sobre NFS no es confiable, además cuesta 36 USD. c7a.large: 80 USD, cuatro veces la t3.small, para una carga que no pasa de un núcleo, y no arregla el cuello de las escrituras. t3.micro: su línea base es 0,2 vCPU, viviría pagando créditos. Darle 4 vCPU a la VM del portátil: no crea núcleos, solo reparte los mismos 2.">
-  <div class="kicker">Opciones descartadas</div>
-  <h2>Lo que no elegimos, y por qué</h2>
-  <table style="margin-top:12px">
-    <thead><tr><th style="width:30%">Opción</th><th>Por qué se descartó</th></tr></thead>
-    <tbody>
-      <tr><td><b>Fargate + EFS</b><br><span class="nota-fuente">contenedor administrado · 36,0 USD</span></td><td>No tiene disco propio: SQLite quedaría sobre NFS, donde los bloqueos no son confiables y cada fsync viaja por la red. Además es más cara.</td></tr>
-      <tr><td><b>c7a.large</b><br><span class="nota-fuente">2 núcleos dedicados · 80,2 USD</span></td><td>Cuatro veces el precio de la t3.small para una carga de 0,50 núcleos, y no mejora el cuello de las escrituras (un solo escritor).</td></tr>
-      <tr><td><b>t3.micro</b><br><span class="nota-fuente">1 GiB</span></td><td>La memoria alcanzaría, pero su línea base es 0,2 vCPU: con 0,50 núcleos medidos viviría pagando créditos.</td></tr>
-      <tr><td><b>Más vCPU para la VM del portátil</b></td><td>El Athlon tiene 2 núcleos físicos; darle 4 vCPU a la VM no crea núcleos, solo reparte los mismos 2.</td></tr>
-    </tbody>
-  </table>
-  <div class="pie"><span>Dimensionamiento de Memos</span><span>12</span></div>
-</section>
-
-<!-- 13 · recomendación -->
-<section class="slide" data-notas="Cierre. Recomendamos una t3.small con 20 GB de gp3, unos 20,5 USD al mes, con Memos en un contenedor de 1 CPU y 512 MiB: 512 porque en la escalonada limitada la RSS llegó a 238 MiB, y así queda el doble de margen sin OOM. Si el uso promedio de 24 h pasara de 1 vCPU, convendría una c7a.medium. Y si hubiera que escalar de verdad: PostgreSQL para tener varios escritores, índices para la búsqueda y caché para las estadísticas. Todo es reproducible con bash scripts/bateria.sh; los datos crudos están en results/. Preguntas.">
-  <div class="kicker">Recomendación</div>
-  <h2>AWS EC2 t3.small + gp3, con Memos en un contenedor de 1 CPU / 512 MiB</h2>
-  <div class="cifras" style="margin-top:20px">
-    <div class="cifra"><div class="v">20,5<small>USD/mes</small></div><div class="e">t3.small + 20 GB gp3 + IPv4</div></div>
-    <div class="cifra"><div class="v">0,50<small>núcleos</small></div><div class="e">promedio medido, frente a 0,4 vCPU de línea base</div></div>
-    <div class="cifra"><div class="v">64<small>MiB</small></div><div class="e">RSS medida: los 2 GiB sobran 30 veces</div></div>
-    <div class="cifra"><div class="v">512<small>MiB</small></div><div class="e">límite del contenedor: el doble de los 238 MiB de pico</div></div>
+<!-- 4 · Tres opciones -->
+<section class="slide" data-notas="Las tres opciones contra la misma demanda medida: 0,50 núcleos, 64 MiB, 14 IOPS, 131 KB/s a 10 peticiones por segundo. El portátil aguanta y es el más barato, pero no está siempre encendido ni es accesible desde internet. La t3.small de Amazon cuesta 20,5 dólares al mes y le sobra memoria, disco y red; lo justo es la CPU, porque su línea base es 0,4 vCPU (procesador virtual) y usamos 0,50. El contenedor limitado a 1 núcleo y 256 MiB aguanta, pero el sistema lo pausa el 4,3 % del tiempo (throttling) y en la prueba de límite su memoria llegó a 238 de 256: casi se cae.">
+  <div class="kicker">Comparación justa · misma demanda medida</div>
+  <h2>Tres opciones a 10 req/s</h2>
+  <div class="opciones">
+    <div class="op">
+      <div class="tipo">A · Máquina física</div>
+      <h3>Nuestro portátil</h3>
+      <span class="chip si">Aguanta · p95 250 ms</span>
+      <div class="costo">12,3<small> USD/mes</small></div>
+      <ul>
+        <li class="mas">Le sobran <b>memoria y disco</b></li>
+        <li class="menos">No está siempre encendido ni tiene <b>IP pública</b></li>
+        <li class="menos">Comparte sus 2 núcleos con quien lo usa</li>
+      </ul>
+    </div>
+    <div class="op gana">
+      <div class="sello">Recomendada</div>
+      <div class="tipo">B · Nube</div>
+      <h3>AWS EC2 t3.small</h3>
+      <span class="chip si">Aguanta · usa 0,35–0,75 de 2 vCPU</span>
+      <div class="costo">20,5<small> USD/mes</small></div>
+      <ul>
+        <li class="mas">Le sobran <b>memoria</b> (2 GiB), <b>disco</b> (3 000 IOPS) y <b>red</b></li>
+        <li class="menos">Justa en <b>CPU</b>: su base es 0,4 vCPU <span class="exp">(procesador virtual)</span></li>
+        <li class="mas">Siempre encendida, IP pública</li>
+      </ul>
+    </div>
+    <div class="op">
+      <div class="tipo">C · Contenedor con límites</div>
+      <h3>1 núcleo · 256 MiB</h3>
+      <span class="chip casi">Aguanta, justo · p95 279 ms</span>
+      <div class="costo" style="font-size:34px">igual que A</div>
+      <ul>
+        <li class="menos">Pausado el <b>4,3 %</b> del tiempo <span class="exp">(throttling: gasta su tope de CPU)</span></li>
+        <li class="menos">Memoria: llegó a <b>238 de 256 MiB</b>, casi un OOM <span class="exp">(cierre por falta de memoria)</span></li>
+        <li class="mas">Le sobran disco y red</li>
+      </ul>
+    </div>
   </div>
-  <ul>
-    <li><b>Si el promedio de 24 h supera ~1,0 vCPU</b>, los créditos harían más cara la t3.small que una <b>c7a.medium</b> (42,7 USD, 1 núcleo dedicado).</li>
-    <li><b>El portátil no sirve para producción:</b> no está siempre encendido, no tiene IP pública y comparte sus 2 núcleos con quien lo usa.</li>
-    <li><b>Para escalar de verdad:</b> PostgreSQL (varios escritores), índices para la búsqueda de texto y caché para las estadísticas.</li>
-  </ul>
-  <p class="nota-fuente" style="margin-top:auto">Reproducible: <code>bash scripts/bateria.sh</code> · guiones y datos crudos en <code>memos-carga/</code> · informe completo en formato IEEE.</p>
-  <div class="pie"><span>Dimensionamiento de Memos</span><span>13</span></div>
+  <div class="demanda"><span class="k">Demanda medida</span><span><b>0,50</b>núcleos</span><span class="sep">|</span><span><b>64</b>MiB</span><span class="sep">|</span><span><b>14</b>IOPS</span><span class="sep">|</span><span><b>131</b>KB/s de red</span><span class="sep">|</span><span>a <b>10</b>req/s</span></div>
+  <div class="num">4 / 5</div>
+</section>
+
+<!-- 5 · ×10 y recomendación -->
+<section class="slide" data-notas="Si la carga fuera 10 veces mayor, primero se llena la CPU. Lo que falla son los inicios de sesión y las escrituras: al exigirle 40 por segundo, el login falló 99 % y crear notas 37 %, mientras que leer nunca falló. El login falla porque bcrypt es CPU pura; las escrituras, porque con la CPU llena cada una retiene más tiempo el único turno de escritura de SQLite. Descartamos una máquina más grande (4 veces el precio sin resolver las escrituras), una más pequeña (no le alcanza la CPU) y Fargate con disco en red (SQLite no es confiable sobre la red). Recomendamos la t3.small con la aplicación en un contenedor de 1 núcleo y 512 MiB, el doble del máximo que medimos. Y para crecer de verdad: PostgreSQL, que sí permite varias escrituras a la vez. Gracias.">
+  <div class="kicker">Si la carga se multiplicara × 10 · y la recomendación</div>
+  <h2>Primero se llena la CPU; fallan login y escrituras</h2>
+  <div class="fila">
+    <div class="col card" style="flex:1.1">
+      <div class="graf-tit">Errores por operación al pedir 40 req/s</div>
+      <div class="graf-sub">las lecturas nunca fallaron</div>
+      <div class="graf" id="g-err"></div>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="reco">
+        <div class="t">Recomendación</div>
+        <div class="v">AWS t3.small<br>+ contenedor 1 núcleo / 512 MiB</div>
+        <p><b>20,5 USD/mes.</b> 512 MiB es el doble del máximo medido (238 MiB). Para crecer: <b>PostgreSQL</b> <span class="exp">(base de datos con varias escrituras a la vez)</span>.</p>
+      </div>
+      <div class="card descarte">
+        <h3>Descartadas</h3>
+        <b>c7a.large</b> · 4× el precio sin resolver las escrituras<br>
+        <b>t3.micro</b> · no le alcanza la CPU<br>
+        <b>Fargate + disco en red</b> · SQLite no es confiable sobre la red<br>
+        <b>Más vCPU al portátil</b> · no crea núcleos reales
+      </div>
+    </div>
+  </div>
+  <div class="num">5 / 5</div>
 </section>
 
 </div>
 <div id="notas"><div class="t">Notas del expositor · diapositiva <span id="nn"></span></div><div id="nt"></div></div>
-<div id="ayuda">← → para avanzar · N notas · F pantalla completa</div>
+<div id="ayuda">← → avanzar · N notas · F pantalla completa</div>
 
 <script>
-// ------------------------------------------------------------ datos medidos (batería del 3 nov 2026)
-const ESC = [ // pedido, logrado, p95 ms, PSI cpu %, PSI io %
-  [5, 5.1, 216, 2.8, 1.0], [10, 10.2, 168, 3.9, 1.8], [15, 15.4, 227, 7.2, 2.1], [20, 20.2, 4298, 15.7, 2.0],
-  [25, 27.3, 5872, 16.1, 2.0], [30, 20.6, 8852, 20.9, 1.3], [40, 24.2, 60008, 28.5, 0.8]];
-const EP = [ // repetición 2: t (s), PSI cpu %, RSS MiB
-  [560, 10.2, 61.3], [570, 7.1, 59.9], [580, 8.0, 61.7], [590, 3.5, 60.5], [600, 5.9, 60.7], [610, 8.0, 62.7],
-  [620, 19.0, 63.2], [630, 39.5, 78.8], [640, 37.5, 98.0], [650, 27.5, 123.2], [660, 44.6, 152.3], [670, 33.2, 170.6],
-  [680, 37.7, 168.9], [690, 32.7, 143.3], [700, 37.0, 86.5], [710, 26.4, 81.4], [720, 11.9, 78.8], [730, 8.2, 72.6]];
-const ERR = [ ['login', 99, 'escritura'], ['editar', 54, 'escritura'], ['crear', 37, 'escritura'], ['adjunto_subir', 29, 'escritura'],
-  ['listar', 0, 'lectura'], ['obtener', 0, 'lectura'], ['buscar_texto', 0, 'lectura'], ['estadisticas', 0, 'lectura']];
+// Datos medidos: batería del 3 nov 2026 (memos-bench, escalonada)
+const ESC = [ // pedido req/s, p95 ms, PSI cpu %, PSI disco %
+  [5, 216, 2.8, 1.0], [10, 168, 3.9, 1.8], [15, 227, 7.2, 2.1], [20, 4298, 15.7, 2.0],
+  [25, 5872, 16.1, 2.0], [30, 8852, 20.9, 1.3], [40, 60008, 28.5, 0.8]];
+const ERR = [['login', 99], ['editar', 54], ['crear', 37], ['subir adjunto', 29], ['leer / listar / buscar', 0]];
 
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const NS = 'http://www.w3.org/2000/svg';
 const fmt = (x, d = 0) => x.toLocaleString('es-CO', { minimumFractionDigits: d, maximumFractionDigits: d });
-function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function el(tag, a, p) { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; }
+function tt(host) { const t = document.createElement('div'); t.className = 'tt'; host.appendChild(t); return t; }
+function verTT(t, host, x, y, html) { t.innerHTML = html; t.style.opacity = 1;
+  t.style.left = Math.min(Math.max(x - t.offsetWidth / 2, 0), host.clientWidth - t.offsetWidth) + 'px'; t.style.top = (y - t.offsetHeight - 10) + 'px'; }
 
-function tooltip(host) { const t = document.createElement('div'); t.className = 'tt'; host.appendChild(t); return t; }
-function showTT(t, host, x, y, html) { t.innerHTML = html; t.style.opacity = 1; const w = host.clientWidth;
-  t.style.left = Math.min(Math.max(x - t.offsetWidth / 2, 0), w - t.offsetWidth) + 'px'; t.style.top = (y - t.offsetHeight - 10) + 'px'; }
-
-// Gráfica de líneas genérica: una escala de y, varias series
-function lineas(id, { xs, series, ylog = false, ymax, ymin = 0, xticks, yticks, yfmt = (v) => fmt(v), xfmt = (v) => fmt(v), ref, banda, tip }) {
-  const host = document.getElementById(id); const W = host.clientWidth, H = host.clientHeight;
-  const m = { l: 52, r: 18, t: 12, b: 30 }; const svg = el('svg', { viewBox: `0 0 ${W} ${H}` }, host);
-  const x0 = Math.min(...xs), x1 = Math.max(...xs);
-  const X = (v) => m.l + (v - x0) / (x1 - x0) * (W - m.l - m.r);
-  const ly = (v) => Math.log10(v);
-  const Y = ylog ? (v) => H - m.b - (ly(v) - ly(ymin)) / (ly(ymax) - ly(ymin)) * (H - m.t - m.b)
+function lineas(id, { xs, series, ylog, ymin, ymax, yticks, yfmt = (v) => v, xfmt = (v) => v, marca, tip }) {
+  const host = document.getElementById(id); host.innerHTML = '';
+  const W = host.clientWidth, H = host.clientHeight, m = { l: 50, r: 40, t: 14, b: 28 };
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}` }, host);
+  const X = (v) => m.l + (v - xs[0]) / (xs[xs.length - 1] - xs[0]) * (W - m.l - m.r);
+  const Y = ylog ? (v) => H - m.b - (Math.log10(v) - Math.log10(ymin)) / (Math.log10(ymax) - Math.log10(ymin)) * (H - m.t - m.b)
                  : (v) => H - m.b - (v - ymin) / (ymax - ymin) * (H - m.t - m.b);
-  if (banda) el('rect', { x: X(banda[0]), y: m.t, width: X(banda[1]) - X(banda[0]), height: H - m.t - m.b, fill: css('--band') }, svg);
-  const g = el('g', { class: 'grid' }, svg), ej = el('g', { class: 'eje' }, svg);
+  const g = el('g', { class: 'grid' }, svg), e = el('g', { class: 'eje' }, svg);
+  if (marca) { // franja: zona con cola
+    el('rect', { x: X(marca.desde), y: m.t, width: W - m.r - X(marca.desde), height: H - m.t - m.b, fill: css('--band') }, svg);
+    const t = el('text', { x: X(marca.desde) + 8, y: m.t + 16, 'font-size': 13, 'font-weight': 700, fill: css('--series-2') }, svg); t.textContent = marca.texto;
+    el('line', { x1: X(marca.codo), x2: X(marca.codo), y1: m.t, y2: H - m.b, stroke: css('--ok'), 'stroke-width': 2, 'stroke-dasharray': '4 4' }, svg);
+    const c = el('text', { x: X(marca.codo) - 6, y: m.t + 16, 'text-anchor': 'end', 'font-size': 13, 'font-weight': 800, fill: css('--ok') }, svg); c.textContent = 'codo';
+  }
   yticks.forEach((v) => { el('line', { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v) }, g);
-    const t = el('text', { x: m.l - 8, y: Y(v) + 4, 'text-anchor': 'end' }, ej); t.textContent = yfmt(v); });
-  xticks.forEach((v) => { const t = el('text', { x: X(v), y: H - m.b + 18, 'text-anchor': 'middle' }, ej); t.textContent = xfmt(v); });
-  el('line', { x1: m.l, x2: W - m.r, y1: H - m.b, y2: H - m.b, stroke: css('--text-muted') }, svg);
-  if (ref) el('path', { d: ref.map((p, i) => (i ? 'L' : 'M') + X(p[0]) + ',' + Y(p[1])).join(''), fill: 'none', stroke: css('--text-muted'), 'stroke-width': 1.5, 'stroke-dasharray': '5 5' }, svg);
+    const t = el('text', { x: m.l - 8, y: Y(v) + 4, 'text-anchor': 'end' }, e); t.textContent = yfmt(v); });
+  xs.forEach((v) => { const t = el('text', { x: X(v), y: H - m.b + 18, 'text-anchor': 'middle' }, e); t.textContent = xfmt(v); });
   series.forEach((s) => {
-    el('path', { d: s.v.map((v, i) => (i ? 'L' : 'M') + X(xs[i]) + ',' + Y(v)).join(''), fill: 'none', stroke: s.c, 'stroke-width': 2.5, 'stroke-linejoin': 'round' }, svg);
-    s.v.forEach((v, i) => el('circle', { cx: X(xs[i]), cy: Y(v), r: s.r || 4.5, fill: s.c, stroke: css('--surface-1'), 'stroke-width': 2 }, svg));
-    if (s.etq) { const t = el('text', { x: X(xs[xs.length - 1]) + 8, y: Y(s.v[s.v.length - 1]) + 4, 'font-size': 13, fill: css('--text-secondary') }, svg); t.textContent = s.etq; }
+    el('path', { d: s.v.map((v, i) => (i ? 'L' : 'M') + X(xs[i]) + ',' + Y(v)).join(''), fill: 'none', stroke: s.c, 'stroke-width': 3, 'stroke-linejoin': 'round' }, svg);
+    s.v.forEach((v, i) => el('circle', { cx: X(xs[i]), cy: Y(v), r: 5, fill: s.c, stroke: css('--surface-1'), 'stroke-width': 2 }, svg));
+    if (s.etq) { const t = el('text', { x: X(xs[xs.length - 1]) + 9, y: Y(s.v[s.v.length - 1]) + 4, 'font-size': 13, 'font-weight': 700, fill: css('--text-secondary') }, svg); t.textContent = s.etq; }
   });
-  if (tip) { // capa de hover: columna más cercana
-    const tt = tooltip(host); const cross = el('line', { y1: m.t, y2: H - m.b, stroke: css('--text-muted'), 'stroke-width': 1, opacity: 0 }, svg);
-    const hit = el('rect', { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: 'transparent' }, svg);
-    hit.addEventListener('mousemove', (e) => { const r = svg.getBoundingClientRect(); const px = (e.clientX - r.left) * W / r.width;
-      let i = 0; xs.forEach((v, k) => { if (Math.abs(X(v) - px) < Math.abs(X(xs[i]) - px)) i = k; });
-      cross.setAttribute('x1', X(xs[i])); cross.setAttribute('x2', X(xs[i])); cross.setAttribute('opacity', .6);
-      showTT(tt, host, X(xs[i]) * r.width / W, m.t * r.height / H + 40, tip(i)); });
-    hit.addEventListener('mouseleave', () => { tt.style.opacity = 0; cross.setAttribute('opacity', 0); });
-  }
+  const T = tt(host), cruz = el('line', { y1: m.t, y2: H - m.b, stroke: css('--text-muted'), opacity: 0 }, svg);
+  const hit = el('rect', { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: 'transparent' }, svg);
+  hit.addEventListener('mousemove', (ev) => { const r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * W / r.width;
+    let i = 0; xs.forEach((v, k) => { if (Math.abs(X(v) - px) < Math.abs(X(xs[i]) - px)) i = k; });
+    cruz.setAttribute('x1', X(xs[i])); cruz.setAttribute('x2', X(xs[i])); cruz.setAttribute('opacity', .7);
+    verTT(T, host, X(xs[i]) * r.width / W, (m.t + 40) * r.height / H, tip(i)); });
+  hit.addEventListener('mouseleave', () => { T.style.opacity = 0; cruz.setAttribute('opacity', 0); });
 }
 
-// Barras horizontales (una serie)
 function barras(id, datos) {
-  const host = document.getElementById(id); const W = host.clientWidth, H = host.clientHeight;
-  const m = { l: 130, r: 60, t: 6, b: 24 }; const svg = el('svg', { viewBox: `0 0 ${W} ${H}` }, host);
-  const fila = (H - m.t - m.b) / datos.length, alto = Math.min(26, fila - 8);
+  const host = document.getElementById(id); host.innerHTML = '';
+  const W = host.clientWidth, H = host.clientHeight, m = { l: 170, r: 56, t: 8, b: 26 };
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}` }, host);
+  const fila = (H - m.t - m.b) / datos.length, alto = Math.min(30, fila - 12);
   const X = (v) => m.l + v / 100 * (W - m.l - m.r);
-  const g = el('g', { class: 'grid' }, svg), ej = el('g', { class: 'eje' }, svg);
+  const g = el('g', { class: 'grid' }, svg), e = el('g', { class: 'eje' }, svg);
   [0, 25, 50, 75, 100].forEach((v) => { el('line', { x1: X(v), x2: X(v), y1: m.t, y2: H - m.b }, g);
-    const t = el('text', { x: X(v), y: H - m.b + 16, 'text-anchor': 'middle' }, ej); t.textContent = v + ' %'; });
-  const tt = tooltip(host);
-  datos.forEach(([op, v, tipo], i) => {
+    const t = el('text', { x: X(v), y: H - m.b + 17, 'text-anchor': 'middle' }, e); t.textContent = v + ' %'; });
+  const T = tt(host);
+  datos.forEach(([op, v], i) => {
     const y = m.t + i * fila + (fila - alto) / 2;
-    const n = el('text', { x: m.l - 10, y: y + alto / 2 + 5, 'text-anchor': 'end', 'font-size': 15, fill: css('--text-primary') }, svg); n.textContent = op;
-    if (v > 0) el('path', { d: `M${X(0)},${y} H${X(v) - 4} a4,4 0 0 1 4,4 V${y + alto - 4} a4,4 0 0 1 -4,4 H${X(0)} Z`, fill: css('--series-1') }, svg);
-    else el('line', { x1: X(0), x2: X(0) + 3, y1: y + alto / 2, y2: y + alto / 2, stroke: css('--text-muted'), 'stroke-width': 2 }, svg);
-    const t = el('text', { x: X(v) + 8, y: y + alto / 2 + 5, 'font-size': 14, fill: css('--text-secondary') }, svg); t.textContent = v + ' %';
-    const hit = el('rect', { x: 0, y: m.t + i * fila, width: W, height: fila, fill: 'transparent' }, svg);
-    hit.addEventListener('mousemove', (e) => { const r = svg.getBoundingClientRect();
-      showTT(tt, host, (X(v) + 30) * r.width / W, (y) * r.height / H, `<b>${op}</b> (${tipo})<br>${v} % de errores a 40 req/s`); });
-    hit.addEventListener('mouseleave', () => (tt.style.opacity = 0));
+    const n = el('text', { x: m.l - 12, y: y + alto / 2 + 5, 'text-anchor': 'end', 'font-size': 15, fill: css('--text-primary') }, svg); n.textContent = op;
+    if (v > 0) el('path', { d: `M${X(0)},${y} H${X(v) - 4} a4,4 0 0 1 4,4 V${y + alto - 4} a4,4 0 0 1 -4,4 H${X(0)} Z`, fill: css('--series-2') }, svg);
+    else el('line', { x1: X(0), x2: X(0) + 4, y1: y + alto / 2, y2: y + alto / 2, stroke: css('--ok'), 'stroke-width': 3 }, svg);
+    const t = el('text', { x: X(v) + 10, y: y + alto / 2 + 5, 'font-size': 15, 'font-weight': 700, fill: v ? css('--text-secondary') : css('--ok') }, svg); t.textContent = v + ' %';
+    const h = el('rect', { x: 0, y: m.t + i * fila, width: W, height: fila, fill: 'transparent' }, svg);
+    h.addEventListener('mousemove', () => { const r = svg.getBoundingClientRect(); verTT(T, host, (X(v) + 40) * r.width / W, y * r.height / H, `<b>${op}</b>: ${v} % de errores`); });
+    h.addEventListener('mouseleave', () => (T.style.opacity = 0));
   });
-  if (datos.some((d) => d[2] === 'lectura')) {
-    const i = datos.findIndex((d) => d[2] === 'lectura');
-    const y = m.t + i * fila - 2; el('line', { x1: 0, x2: W - m.r, y1: y, y2: y, stroke: css('--rule'), 'stroke-dasharray': '3 4' }, svg);
-  }
 }
 
-// ------------------------------------------------------------ navegación
+const GRAFS = {
+  'g-p95': () => lineas('g-p95', { xs: ESC.map((r) => r[0]), series: [{ v: ESC.map((r) => r[1]), c: css('--series-1') }],
+    ylog: true, ymin: 100, ymax: 100000, yticks: [100, 1000, 10000, 100000], yfmt: (v) => (v >= 1000 ? fmt(v / 1000) + ' s' : v + ' ms'),
+    xfmt: (v) => v + '', marca: { codo: 15, desde: 17.5, texto: 'se forma fila' },
+    tip: (i) => `<b>${ESC[i][0]} req/s</b> · p95 ${fmt(ESC[i][1])} ms` }),
+  'g-psi': () => lineas('g-psi', { xs: ESC.map((r) => r[0]), series: [{ v: ESC.map((r) => r[2]), c: css('--series-1'), etq: 'CPU' }, { v: ESC.map((r) => r[3]), c: css('--series-2'), etq: 'disco' }],
+    ymin: 0, ymax: 30, yticks: [0, 10, 20, 30], yfmt: (v) => v + ' %', xfmt: (v) => v + ' req/s',
+    tip: (i) => `<b>${ESC[i][0]} req/s</b><br>esperando CPU: ${fmt(ESC[i][2], 1)} %<br>esperando disco: ${fmt(ESC[i][3], 1)} %` }),
+  'g-err': () => barras('g-err', ERR),
+};
+
 const slides = [...document.querySelectorAll('.slide')];
 let actual = 0;
 function escalar() { const s = Math.min(innerWidth / 1280, innerHeight / 720); document.getElementById('deck').style.transform = `translate(-50%, -50%) scale(${s})`; }
@@ -462,31 +350,7 @@ function ir(n) {
   document.getElementById('nn').textContent = actual + 1;
   document.getElementById('nt').textContent = slides[actual].dataset.notas || '';
   history.replaceState(null, '', '#' + (actual + 1));
-  // las gráficas se dibujan cuando su diapositiva es visible (necesitan medidas reales)
-  if (slides[actual].querySelector('.graf') && !slides[actual].dataset.listo) { slides[actual].dataset.listo = 1; dibujarEn(slides[actual]); }
-}
-function dibujarEn(s) { const ids = [...s.querySelectorAll('.graf')].map((g) => g.id); dibujarSolo(ids); }
-function dibujarSolo(ids) {
-  const pedidos = ESC.map((r) => r[0]);
-  const def = {
-    'g-codo': () => lineas('g-codo', { xs: pedidos, series: [{ v: ESC.map((r) => r[1]), c: css('--series-1') }], ymax: 42, ymin: 0,
-      xticks: pedidos, yticks: [0, 10, 20, 30, 40], ref: [[5, 5], [40, 40]], xfmt: (v) => v,
-      tip: (i) => `<b>${ESC[i][0]} req/s pedidas</b><br>atendidas: ${fmt(ESC[i][1], 1)} req/s` }),
-    'g-p95': () => lineas('g-p95', { xs: pedidos, series: [{ v: ESC.map((r) => r[2]), c: css('--series-1') }], ylog: true, ymin: 100, ymax: 100000,
-      xticks: pedidos, yticks: [100, 1000, 10000, 100000], yfmt: (v) => (v >= 1000 ? fmt(v / 1000) + ' s' : v + ' ms'),
-      tip: (i) => `<b>${ESC[i][0]} req/s</b><br>p95: ${fmt(ESC[i][2])} ms` }),
-    'g-psi': () => lineas('g-psi', { xs: pedidos, series: [{ v: ESC.map((r) => r[3]), c: css('--series-1'), etq: 'CPU' }, { v: ESC.map((r) => r[4]), c: css('--series-2'), etq: 'E/S' }],
-      ymax: 30, ymin: 0, xticks: pedidos, yticks: [0, 10, 20, 30], yfmt: (v) => v + ' %', xfmt: (v) => v + ' req/s',
-      tip: (i) => `<b>${ESC[i][0]} req/s</b><br>PSI CPU: ${fmt(ESC[i][3], 1)} %<br>PSI E/S: ${fmt(ESC[i][4], 1)} %` }),
-    'g-ep-psi': () => lineas('g-ep-psi', { xs: EP.map((r) => r[0]), series: [{ v: EP.map((r) => r[1]), c: css('--series-1'), r: 3.5 }], ymax: 50, ymin: 0,
-      xticks: [560, 600, 640, 680, 720], yticks: [0, 10, 20, 30, 40, 50], yfmt: (v) => v + ' %', xfmt: (v) => v + ' s', banda: [620, 725],
-      tip: (i) => `<b>t = ${EP[i][0]} s</b><br>PSI CPU: ${fmt(EP[i][1], 1)} %` }),
-    'g-ep-rss': () => lineas('g-ep-rss', { xs: EP.map((r) => r[0]), series: [{ v: EP.map((r) => r[2]), c: css('--series-1'), r: 3.5 }], ymax: 200, ymin: 0,
-      xticks: [560, 600, 640, 680, 720], yticks: [0, 50, 100, 150, 200], xfmt: (v) => v + ' s', banda: [620, 725],
-      tip: (i) => `<b>t = ${EP[i][0]} s</b><br>RSS: ${fmt(EP[i][2])} MiB` }),
-    'g-err': () => barras('g-err', ERR),
-  };
-  ids.forEach((id) => def[id] && def[id]());
+  slides[actual].querySelectorAll('.graf').forEach((g) => { if (!g.dataset.listo) { g.dataset.listo = 1; GRAFS[g.id] && GRAFS[g.id](); } });
 }
 addEventListener('keydown', (e) => {
   if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); ir(actual + 1); }
@@ -500,8 +364,8 @@ addEventListener('resize', escalar);
 escalar();
 setTimeout(() => (document.getElementById('ayuda').style.opacity = 0), 6000);
 ir((parseInt(location.hash.slice(1)) || 1) - 1);
-// para imprimir a PDF: dibuja todas
-addEventListener('beforeprint', () => slides.forEach((s) => { if (s.querySelector('.graf') && !s.dataset.listo) { s.style.display = 'flex'; s.dataset.listo = 1; dibujarSolo([...s.querySelectorAll('.graf')].map((g) => g.id)); s.style.display = ''; } }));
+addEventListener('beforeprint', () => slides.forEach((s) => { const prev = s.style.display; s.style.display = 'flex';
+  s.querySelectorAll('.graf').forEach((g) => { if (!g.dataset.listo) { g.dataset.listo = 1; GRAFS[g.id] && GRAFS[g.id](); } }); s.style.display = prev; }));
 </script>
 </body>
 </html>
